@@ -10,6 +10,7 @@ const schema = a.schema({
   Todo: a
     .model({
       content: a.string(),
+      isFinite: a.boolean(),
     })
     .authorization((allow) => [allow.owner()]),
 });
