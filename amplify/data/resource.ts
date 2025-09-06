@@ -15,6 +15,9 @@ const schema = a.schema({
     .authorization((allow) => [allow.owner()]),
 });
 
+// The allow.publicApiKey() rule designates that anyone authenticated using an API 
+// key can create, read, update, and delete todos.
+
 export type Schema = ClientSchema<typeof schema>;
 
 export const data = defineData({

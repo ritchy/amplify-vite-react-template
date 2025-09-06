@@ -23,21 +23,43 @@ function App() {
     client.models.Todo.delete({ id })
   }
 
+  function getTodoList() {
+    // This is an example of a GraphQL query that could be used to fetch todos
+   //    query MyQuery {
+   // listTodos {
+   // items {
+   //   id
+   //   content
+   //   isDone
+    // }
+    // }
+    return <ul>{todos.map(todo => <li key={todo.id}>{todo.content}</li>)}</ul>
+  }
+
+  async function getTodos() {
+    const { data: todos } = await client.models.Todo.list();
+    return todos;
+  }
+
   return (
     <main>
       <h1>{user?.signInDetails?.loginId}'s todos</h1>
       <button onClick={createTodo}>+ new</button>
       <ul>
         {todos.map((todo) => (
-          <li onClick={() => deleteTodo(todo.id)} key={todo.id}>{todo.content} - done? {todo.isDone}</li>
+          <li onClick={() => deleteTodo(todo.id)} key={todo.id}>{todo.content} - done -{String(todo.isDone)}-</li>
         ))}
       </ul>
       <div>
-        🥳 App successfully hosted. Try creating a new todo.
         <br />
         <a href="https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates">
           Review next step of this tutorial.
         </a>
+      </div>
+      <div>
+        {getTodoList()}
+        <h2>Current User</h2>
+        <p>Sign in details: {user?.signInDetails?.loginId}</p>
       </div>
       <button onClick={signOut}>Sign out</button>
     </main>
