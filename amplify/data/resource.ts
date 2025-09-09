@@ -13,8 +13,8 @@ const schema = a.schema({
       notes: a.string().array(),
       isDone: a.boolean(),
     })
-    .authorization((allow) => [allow.publicApiKey()]),
-    //.authorization((allow) => [allow.owner()]),
+    //.authorization((allow) => [allow.publicApiKey()]),
+    .authorization((allow) => [allow.owner()]),
 });
 
 // The allow.publicApiKey() rule designates that anyone authenticated using an API 
