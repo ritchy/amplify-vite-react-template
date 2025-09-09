@@ -43,6 +43,9 @@ function App() {
 
   return (
     <main>
+      <br/>
+      <h1>Todo App Sandbox</h1>
+      <br/><br/>
       <h1>{user?.signInDetails?.loginId}'s todos</h1>
       <button onClick={createTodo}>+ new</button>
       <ul>
@@ -63,6 +66,7 @@ function App() {
         </a>
       </div>
       <div>
+        GraphQL query example to fetch todos:
         {getTodoList()}
         <h2>Current User</h2>
         <p>Sign in details: {user?.signInDetails?.loginId}</p>
