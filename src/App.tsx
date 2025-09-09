@@ -36,10 +36,10 @@ function App() {
     return <ul>{todos.map(todo => <li key={todo.id}>{todo.content}</li>)}</ul>
   }
 
-  async function getTodos() {
-    const { data: todos } = await client.models.Todo.list();
-    return todos;
-  }
+  //async function getTodos() {
+  //  const { data: todos } = await client.models.Todo.list();
+  //  return todos;
+ // }
 
   return (
     <main>
