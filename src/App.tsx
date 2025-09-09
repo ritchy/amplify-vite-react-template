@@ -47,6 +47,12 @@ function App() {
       <button onClick={createTodo}>+ new</button>
       <ul>
         {todos.map((todo) => (
+          <li>{todo.content} - done -{String(todo.isDone)}-</li>
+        ))}
+      </ul>
+      <h2>Delete Todos</h2>
+      <ul>
+        {todos.map((todo) => (
           <li onClick={() => deleteTodo(todo.id)} key={todo.id}>{todo.content} - done -{String(todo.isDone)}-</li>
         ))}
       </ul>
