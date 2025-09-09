@@ -53,7 +53,7 @@ function App() {
       <div>
         <br />
         <a href="https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates">
-          Review next step of this tutorial.
+        Now make front end updates
         </a>
       </div>
       <div>
