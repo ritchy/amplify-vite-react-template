@@ -23,7 +23,7 @@ function App() {
     client.models.Todo.delete({ id })
   }
 
-  function getTodoList() {
+  //function getTodoList() {
     // This is an example of a GraphQL query that could be used to fetch todos
    //    query MyQuery {
    // listTodos {
@@ -33,8 +33,8 @@ function App() {
    //   isDone
     // }
     // }
-    return <ul>{todos.map(todo => <li key={todo.id}>{todo.content}</li>)}</ul>
-  }
+  //  return <ul>{todos.map(todo => <li key={todo.id}>{todo.content}</li>)}</ul>
+  //}
 
   //async function getTodos() {
   //  const { data: todos } = await client.models.Todo.list();
