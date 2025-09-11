@@ -43,9 +43,7 @@ function App() {
 
   return (
     <main>
-      <br/>
       <h1>Todo App Sandbox</h1>
-      <br/><br/>
       <h1>{user?.signInDetails?.loginId}'s todos</h1>
       <button onClick={createTodo}>+ new</button>
       <ul>
