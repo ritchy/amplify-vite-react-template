@@ -7,6 +7,71 @@ specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
+
+  Member: a.model({
+    name: a.string().required(),
+    // 1. Create a reference field
+    // groupId: a.id(),
+    // 2. Create a belongsTo relationship with the reference field
+    //group: a.belongsTo('Group', 'groupId'),
+    groups: a.hasMany('GroupMember', 'memberId'),
+    posts: a.hasMany('Post', 'authorId'),
+  })
+  .authorization((allow) => [allow.publicApiKey()]),
+
+  Group: a.model({
+    name: a.string().required(),
+
+    // 3. Create a hasMany relationship with the reference field
+    //    from the `Member`s model.
+    // members: a.hasMany('Member', 'groupId'),
+    members: a.hasMany('GroupMember', 'groupId'),
+  })
+  .authorization((allow) => [allow.publicApiKey()]),
+
+  GroupMember: a.model({
+    // 1. Create reference fields to both ends of
+    //    the many-to-many relationship
+    memberId: a.id().required(),
+    groupId: a.id().required(),
+
+    member: a.belongsTo('Member', 'memberId'),
+    group: a.belongsTo('Group', 'groupId'),
+  })
+  .authorization((allow) => [allow.publicApiKey()]),
+
+  Post: a.model({
+    title: a.string().required(),
+    content: a.string().required(),
+    // Reference fields must correspond to identifier fields.
+    authorId: a.id().required(),
+    // Must pass references in the same order as identifiers.
+    author: a.belongsTo('Member', 'authorId'),
+  })
+  .authorization((allow) => [allow.publicApiKey()]),
+
+  SurveyResponse: a.customType({
+        choiceId: a.string().required(),
+        memberId: a.string().required(),
+  }),
+
+  SurveyQuestion: a.customType({
+        questionId: a.string().required(),
+        text: a.string().required(),
+  }),
+
+  Survey: a
+    .model({
+      title: a.string().required(),
+      createdDate: a.datetime().required(),
+      multipleAnswers: a.boolean().required(),
+      maxAnswers: a.integer(),
+      questions: a.ref('SurveyQuestion').array().required(),
+      responses: a.ref('SurveyResponse').array(),
+      privacySetting: a.enum(['PRIVATE', 'FRIENDS_ONLY', 'PUBLIC']),
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
+
   Todo: a
     .model({
       content: a.string(),
