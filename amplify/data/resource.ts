@@ -47,8 +47,10 @@ const schema = a.schema({
     authorId: a.id().required(),
     // Must pass references in the same order as identifiers.
     author: a.belongsTo('Member', 'authorId'),
+    privacySetting: a.enum(['PRIVATE', 'GROUP', 'PUBLIC']),
   })
-  .authorization((allow) => [allow.publicApiKey()]),
+  .authorization((allow) => [allow.owner()]),
+  //.authorization((allow) => [allow.publicApiKey()]),
 
   SurveyResponse: a.customType({
         choiceId: a.string().required(),
