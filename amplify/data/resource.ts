@@ -70,7 +70,8 @@ const schema = a.schema({
       responses: a.ref('SurveyResponse').array(),
       privacySetting: a.enum(['PRIVATE', 'FRIENDS_ONLY', 'PUBLIC']),
     })
-    .authorization((allow) => [allow.publicApiKey()]),
+    //.authorization((allow) => [allow.publicApiKey()]),
+    .authorization((allow) => [allow.owner()]),
 
   Todo: a
     .model({
