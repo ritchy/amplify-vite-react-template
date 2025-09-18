@@ -17,7 +17,8 @@ const schema = a.schema({
     groups: a.hasMany('GroupMember', 'memberId'),
     posts: a.hasMany('Post', 'authorId'),
   })
-  .authorization((allow) => [allow.publicApiKey()]),
+  .authorization((allow) => [allow.owner()]),
+  //.authorization((allow) => [allow.publicApiKey()]),
 
   Group: a.model({
     name: a.string().required(),
@@ -27,7 +28,7 @@ const schema = a.schema({
     // members: a.hasMany('Member', 'groupId'),
     members: a.hasMany('GroupMember', 'groupId'),
   })
-  .authorization((allow) => [allow.publicApiKey()]),
+  .authorization((allow) => [allow.owner()]),
 
   GroupMember: a.model({
     // 1. Create reference fields to both ends of
@@ -38,7 +39,7 @@ const schema = a.schema({
     member: a.belongsTo('Member', 'memberId'),
     group: a.belongsTo('Group', 'groupId'),
   })
-  .authorization((allow) => [allow.publicApiKey()]),
+  .authorization((allow) => [allow.owner()]),
 
   Post: a.model({
     title: a.string().required(),
@@ -50,7 +51,6 @@ const schema = a.schema({
     privacySetting: a.enum(['PRIVATE', 'GROUP', 'PUBLIC']),
   })
   .authorization((allow) => [allow.owner()]),
-  //.authorization((allow) => [allow.publicApiKey()]),
 
   SurveyResponse: a.customType({
         choiceId: a.string().required(),
