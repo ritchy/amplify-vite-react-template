@@ -23,6 +23,18 @@ function App() {
     client.models.Todo.delete({ id })
   }
 
+  function listPosts() {
+    client.models.Post.list().then(posts => {
+      console.log("Posts:", posts);
+    });
+  }
+
+
+  async function echo() {
+    const response = await client.queries.echo({ content: "Hello, Echo!" });
+    console.log("Echo response:", response);
+  }
+
   //function getTodoList() {
     // This is an example of a GraphQL query that could be used to fetch todos
    //    query MyQuery {
@@ -63,6 +75,11 @@ function App() {
         <h2>Current User</h2>
         <p>Sign in details: {user?.signInDetails?.loginId}</p>
       </div>
+      <div>
+        <button onClick={listPosts}>list posts</button>
+        <button onClick={echo}>ping</button>
+      </div>
+      <br/><br/>
       <button onClick={signOut}>Sign out</button>
     </main>
   );

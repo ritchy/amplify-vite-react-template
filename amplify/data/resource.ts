@@ -1,11 +1,16 @@
-import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
+import { type ClientSchema, a, defineData, defineFunction } from "@aws-amplify/backend";
 
-/*== STEP 1 ===============================================================
-The section below creates a Todo database table with a "content" field. Try
-adding a new "isDone" field as a boolean. The authorization rule below
-specifies that any user authenticated via an API key can "create", "read",
-"update", and "delete" any "Todo" records.
-=========================================================================*/
+/*=================================================================
+   Define our custom handlers
+==================================================================*/
+
+const echoHandler = defineFunction({
+  entry: './echo-handler/handler.ts'
+})
+
+/*=================================================================
+   Define our db schema and queries, mutations, and subscriptions
+==================================================================*/
 const schema = a.schema({
 
   Member: a.model({
@@ -27,6 +32,7 @@ const schema = a.schema({
     //    from the `Member`s model.
     // members: a.hasMany('Member', 'groupId'),
     members: a.hasMany('GroupMember', 'groupId'),
+    //posts: a.hasMany('Post', 'id'),
   })
   .authorization((allow) => [allow.owner()]),
 
@@ -50,8 +56,35 @@ const schema = a.schema({
     author: a.belongsTo('Member', 'authorId'),
     privacySetting: a.enum(['PRIVATE', 'GROUP', 'PUBLIC']),
   })
+  //.sortKeys(["createdAt"]),
   .authorization((allow) => [allow.owner()]),
+  // allow anyone who's logged in to perform any operation
+  //.authorization((allow) => [allow.authenticated()]),
+  // below, any user (using Amazon Cognito identity pool's unauthenticated roles) 
+  // is allowed to read all posts, but only owners can create, update, and delete their own posts.
+  //.authorization(allow => [
+  //  allow.guest().to(["read"]),
+  //  allow.owner()
+  //])
 
+  // Authorization below is set up for a dynamic set of users to have access
+  // In the example below, the members list is populated with the creator 
+  // of the record upon record creation. The creator can then update the 
+  // members field with additional users. Any user listed in the members
+  // field can access the record.
+//  GroupPost: a.model({
+//    title: a.string().required(),
+//    content: a.string().required(),
+    // Reference fields must correspond to identifier fields.
+//    authorId: a.id().required(),
+    // Must pass references in the same order as identifiers.
+//    author: a.belongsTo('Member', 'authorId'),
+//    members: a.string().array(),
+//    group: a.belongsTo('Group', 'groupId'),
+//    privacySetting: a.enum(['PRIVATE', 'GROUP', 'PUBLIC']),
+//  })
+ // .authorization(allow => [allow.ownersDefinedIn('members')]),
+  
   SurveyResponse: a.customType({
         choiceId: a.string().required(),
         memberId: a.string().required(),
@@ -83,6 +116,20 @@ const schema = a.schema({
     })
     //.authorization((allow) => [allow.publicApiKey()]),
     .authorization((allow) => [allow.owner()]),
+
+    EchoResponse: a.customType({
+    content: a.string(),
+    executionDuration: a.float()
+  }),
+
+  echo: a
+    .query()
+    .arguments({ content: a.string() })
+    .returns(a.ref('EchoResponse'))
+    //.authorization(allow => [allow.publicApiKey()])
+    .authorization((allow) => [allow.authenticated()])
+    // 3. set the function has the handler
+    .handler(a.handler.function(echoHandler))
 });
 
 // The allow.publicApiKey() rule designates that anyone authenticated using an API 
