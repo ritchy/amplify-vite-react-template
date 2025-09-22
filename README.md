@@ -1,10 +1,20 @@
-## AWS Amplify React+Vite Starter Template
+## AWS Amplify React+Vite 
 
-This repository provides a starter template for creating applications using React+Vite and AWS Amplify, emphasizing easy setup for authentication, API, and database capabilities.
+// edit resource.ts
+// Amplify's per-developer cloud sandbox. This feature provides a separate backend 
+// environment for every developer on a team, ideal for local development and testing
+npx ampx sandbox
+
+//generate swift classes
+npx ampx generate graphql-client-code --format modelgen --model-target swift
+
+
+// I believe this runs local web projects (React)
+npm run dev
 
 ## Overview
 
-This template equips you with a foundational React application integrated with AWS Amplify, streamlined for scalability and performance. It is ideal for developers looking to jumpstart their project with pre-configured AWS services like Cognito, AppSync, and DynamoDB.
+This is a foundational React application integrated with AWS Amplify, streamlined for scalability and performance. It is ideal for developers looking to jumpstart their project with pre-configured AWS services like Cognito, AppSync, and DynamoDB.
 
 ## Features
 
@@ -14,7 +24,9 @@ This template equips you with a foundational React application integrated with A
 
 ## Deploying to AWS
 
-For detailed instructions on deploying your application, refer to the [deployment section](https://docs.amplify.aws/react/start/quickstart/#deploy-a-fullstack-app-to-aws) of our documentation.
+Automated git deployment set up, so commit and push to deploy.
+
+For detailed instructions on deploying this application, refer to the [deployment section](https://docs.amplify.aws/react/start/quickstart/#deploy-a-fullstack-app-to-aws) of our documentation.
 
 ## Security
 
