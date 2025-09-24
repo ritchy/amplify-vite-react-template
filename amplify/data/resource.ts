@@ -15,6 +15,7 @@ const schema = a.schema({
 
   Member: a.model({
     name: a.string().required(),
+    profileImagePath: a.string(),
     // 1. Create a reference field
     // groupId: a.id(),
     // 2. Create a belongsTo relationship with the reference field
@@ -122,6 +123,22 @@ const schema = a.schema({
     executionDuration: a.float()
   }),
 
+   Song: a
+    .model({
+      id: a.id().required(),
+      name: a.string().required(),
+      coverArtPath: a.string(),
+    })
+    .authorization((allow) => [allow.authenticated()]),
+
+  PhotoAlbum: a
+    .model({
+      id: a.id().required(),
+      name: a.string().required(),
+      imagePaths: a.string().array(),
+    })
+    .authorization((allow) => [allow.authenticated()]),
+
   echo: a
     .query()
     .arguments({ content: a.string() })
@@ -147,6 +164,7 @@ export const data = defineData({
     },
   },
 });
+
 
 /*== STEP 2 ===============================================================
 Go to your frontend source code. From your client-side code, generate a
