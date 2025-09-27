@@ -118,12 +118,22 @@ const schema = a.schema({
     //.authorization((allow) => [allow.publicApiKey()]),
     .authorization((allow) => [allow.owner()]),
 
-    EchoResponse: a.customType({
-    content: a.string(),
-    executionDuration: a.float()
-  }),
+  EchoResponse: a
+    .customType({
+      content: a.string(),
+      executionDuration: a.float()
+    }),
 
-   Song: a
+  Photo: a
+    .customType({
+      createdDate: a.datetime().required(),
+      imagePath: a.string().required(),
+      memberId: a.string(),
+      description: a.string(),
+      tags: a.string().array(),
+    }),
+
+  Song: a
     .model({
       id: a.id().required(),
       name: a.string().required(),
@@ -135,7 +145,8 @@ const schema = a.schema({
     .model({
       id: a.id().required(),
       name: a.string().required(),
-      imagePaths: a.string().array(),
+      albumPhoto: a.ref('Photo'),
+      photos: a.ref('Photo').array(),
     })
     .authorization((allow) => [allow.authenticated()]),
 
