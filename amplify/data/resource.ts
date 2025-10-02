@@ -126,6 +126,7 @@ const schema = a.schema({
 
   Photo: a
     .customType({
+      id: a.id().required(),
       createdDate: a.datetime().required(),
       imagePath: a.string().required(),
       memberId: a.string(),
