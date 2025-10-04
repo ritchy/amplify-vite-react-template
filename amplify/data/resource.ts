@@ -62,6 +62,8 @@ const schema = a.schema({
 
   Post: a.model({
     id: a.id().required(),
+    createdDate: a.datetime().required(),
+    lastUpdatedDate: a.datetime().required(),
     title: a.string().required(),
     content: a.string().required(),
     // Reference fields must correspond to identifier fields.
