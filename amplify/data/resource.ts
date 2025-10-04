@@ -14,6 +14,7 @@ const echoHandler = defineFunction({
 const schema = a.schema({
 
   Member: a.model({
+    id: a.id().required(),
     name: a.string().required(),
     profileImagePath: a.string(),
     // 1. Create a reference field
@@ -23,10 +24,11 @@ const schema = a.schema({
     groups: a.hasMany('GroupMember', 'memberId'),
     posts: a.hasMany('Post', 'authorId'),
   })
-  .authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.owner()]),
   //.authorization((allow) => [allow.publicApiKey()]),
 
   Group: a.model({
+    id: a.id().required(),
     name: a.string().required(),
 
     // 3. Create a hasMany relationship with the reference field
@@ -35,7 +37,7 @@ const schema = a.schema({
     members: a.hasMany('GroupMember', 'groupId'),
     //posts: a.hasMany('Post', 'id'),
   })
-  .authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.owner()]),
 
   GroupMember: a.model({
     // 1. Create reference fields to both ends of
@@ -46,19 +48,31 @@ const schema = a.schema({
     member: a.belongsTo('Member', 'memberId'),
     group: a.belongsTo('Group', 'groupId'),
   })
-  .authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.owner()]),
+
+  PostItem: a.customType({
+    id: a.id().required(),
+    createdDate: a.datetime().required(),
+    lastUpdatedDate: a.datetime().required(),
+    text: a.string().required(),
+    photos: a.ref('Photo').array(),
+    itemReference: a.string(),
+    itemType: a.enum(['TEXT', 'IMAGE', 'VIDEO', 'GIF', 'SURVEY', 'GAME', 'AUDIO', 'FILE', 'LINK', 'POST', 'OTHER']),
+  }),
 
   Post: a.model({
+    id: a.id().required(),
     title: a.string().required(),
     content: a.string().required(),
     // Reference fields must correspond to identifier fields.
     authorId: a.id().required(),
     // Must pass references in the same order as identifiers.
     author: a.belongsTo('Member', 'authorId'),
+    items: a.ref('PostItem').required().array().required(),
     privacySetting: a.enum(['PRIVATE', 'GROUP', 'PUBLIC']),
   })
-  //.sortKeys(["createdAt"]),
-  .authorization((allow) => [allow.owner()]),
+    //.sortKeys(["createdAt"]),
+    .authorization((allow) => [allow.owner()]),
   // allow anyone who's logged in to perform any operation
   //.authorization((allow) => [allow.authenticated()]),
   // below, any user (using Amazon Cognito identity pool's unauthenticated roles) 
@@ -73,27 +87,27 @@ const schema = a.schema({
   // of the record upon record creation. The creator can then update the 
   // members field with additional users. Any user listed in the members
   // field can access the record.
-//  GroupPost: a.model({
-//    title: a.string().required(),
-//    content: a.string().required(),
-    // Reference fields must correspond to identifier fields.
-//    authorId: a.id().required(),
-    // Must pass references in the same order as identifiers.
-//    author: a.belongsTo('Member', 'authorId'),
-//    members: a.string().array(),
-//    group: a.belongsTo('Group', 'groupId'),
-//    privacySetting: a.enum(['PRIVATE', 'GROUP', 'PUBLIC']),
-//  })
- // .authorization(allow => [allow.ownersDefinedIn('members')]),
-  
+  //  GroupPost: a.model({
+  //    title: a.string().required(),
+  //    content: a.string().required(),
+  // Reference fields must correspond to identifier fields.
+  //    authorId: a.id().required(),
+  // Must pass references in the same order as identifiers.
+  //    author: a.belongsTo('Member', 'authorId'),
+  //    members: a.string().array(),
+  //    group: a.belongsTo('Group', 'groupId'),
+  //    privacySetting: a.enum(['PRIVATE', 'GROUP', 'PUBLIC']),
+  //  })
+  // .authorization(allow => [allow.ownersDefinedIn('members')]),
+
   SurveyResponse: a.customType({
-        choiceId: a.string().required(),
-        memberId: a.string().required(),
+    choiceId: a.string().required(),
+    memberId: a.string().required(),
   }),
 
   SurveyQuestion: a.customType({
-        questionId: a.string().required(),
-        text: a.string().required(),
+    questionId: a.string().required(),
+    text: a.string().required(),
   }),
 
   Survey: a
@@ -147,7 +161,7 @@ const schema = a.schema({
       id: a.id().required(),
       name: a.string().required(),
       albumPhoto: a.ref('Photo'),
-      photos: a.ref('Photo').array(),
+      photos: a.ref('Photo').required().array().required(),
     })
     .authorization((allow) => [allow.authenticated()]),
 
@@ -183,7 +197,7 @@ Go to your frontend source code. From your client-side code, generate a
 Data client to make CRUDL requests to your table. (THIS SNIPPET WILL ONLY
 WORK IN THE FRONTEND CODE FILE.)
 
-Using JavaScript or Next.js React Server Components, Middleware, Server 
+Using JavaScript or Next.js React Server Components, Middleware, Server
 Actions or Pages Router? Review how to generate Data clients for those use
 cases: https://docs.amplify.aws/gen2/build-a-backend/data/connect-to-API/
 =========================================================================*/
