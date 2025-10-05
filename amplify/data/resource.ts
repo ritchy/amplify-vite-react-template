@@ -55,7 +55,7 @@ const schema = a.schema({
     createdDate: a.datetime().required(),
     lastUpdatedDate: a.datetime().required(),
     text: a.string().required(),
-    photos: a.ref('Photo').array(),
+    photos: a.ref('Photo').required().array(),
     itemReference: a.string(),
     itemType: a.enum(['TEXT', 'IMAGE', 'VIDEO', 'GIF', 'SURVEY', 'GAME', 'AUDIO', 'FILE', 'LINK', 'POST', 'OTHER']),
   }),
