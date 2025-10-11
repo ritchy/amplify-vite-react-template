@@ -118,8 +118,8 @@ const schema = a.schema({
       createdDate: a.datetime().required(),
       multipleAnswers: a.boolean().required(),
       maxAnswers: a.integer(),
-      questions: a.ref('SurveyQuestion').array().required(),
-      responses: a.ref('SurveyResponse').array(),
+      questions: a.ref('SurveyQuestion').required().array().required(),
+      responses: a.ref('SurveyResponse').required().array().required(),
       privacySetting: a.enum(['PRIVATE', 'FRIENDS_ONLY', 'PUBLIC']),
     })
     //.authorization((allow) => [allow.publicApiKey()]),
