@@ -15,8 +15,12 @@ const schema = a.schema({
 
   Member: a.model({
     id: a.id().required(),
+    userId: a.id(),
     name: a.string().required(),
-    profileImagePath: a.string(),
+    handle: a.string().required(),
+    profilePhoto: a.ref('Photo'),
+    phoneNumber: a.phone(),
+    email: a.email(),
     // 1. Create a reference field
     // groupId: a.id(),
     // 2. Create a belongsTo relationship with the reference field
