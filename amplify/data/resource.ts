@@ -138,7 +138,7 @@ const schema = a.schema({
     // Must pass references in the same order as identifiers.
     author: a.belongsTo('Member', 'authorId'),
     items: a.ref('PostItem').required().array().required(),
-    comments: a.ref('Comment').required().array().required(),
+    //comments: a.ref('Comment').required().array(),
     privacySetting: a.enum(['PRIVATE', 'GROUP', 'PUBLIC']),
   })
     //.sortKeys(["createdAt"]),
