@@ -8,10 +8,73 @@ const echoHandler = defineFunction({
   entry: './echo-handler/handler.ts'
 })
 
+const roomHandler = defineFunction({
+  entry: './handlers/publishRoom.ts'
+})
+
+/*=================================================================
+   Define our custom types
+==================================================================*/
+const roomType = {
+  topic: a.string().required(),
+}
+
+const messageType = {
+  id: a.id().required(),
+  createdDate: a.datetime().required(),
+  lastUpdatedDate: a.datetime().required(),
+  content: a.string().required(),
+  roomId: a.string().required(),
+  username: a.string().required()
+}
+
 /*=================================================================
    Define our db schema and queries, mutations, and subscriptions
 ==================================================================*/
 const schema = a.schema({
+
+  publishMessage: a.mutation()
+    .arguments(messageType)
+    .returns(a.ref('NewMessage'))
+    .authorization(allow => [allow.authenticated()])
+    .handler(a.handler.custom({
+      entry: './handlers/publishMessage.js',
+    })),
+
+  subscribeMessage: a.subscription()
+    .for(a.ref('publishMessage'))
+    .arguments({ roomId: a.string(), myUsername: a.string() })
+    .authorization(allow => [allow.authenticated()])
+    .handler(a.handler.custom({
+      entry: './handlers/subscribeMessage.js'
+    })),
+
+  NewMessage: a.customType(messageType),
+
+  publishRoom: a.mutation()
+    .arguments(roomType)
+    .returns(a.ref('Room'))
+    .authorization(allow => [allow.authenticated()])
+    .handler(a.handler.function(roomHandler)
+    ),
+
+  subscribeRoom: a.subscription()
+    .for(a.ref('publishRoom'))
+    //.arguments({ roomId: a.string(), myUsername: a.string() })
+    .authorization(allow => [allow.authenticated()])
+    .handler(a.handler.custom({
+      entry: './handlers/subscribeRoom.js'
+    })),
+
+  Room: a.model({
+    topic: a.string(),
+    members: a.string().array().required(),
+  })
+  .authorization((allow) => [allow.authenticated()]),
+
+  Message: a.model(messageType)
+  .authorization((allow) => [allow.authenticated()]),
+
 
   Member: a.model({
     id: a.id().required(),
@@ -75,6 +138,7 @@ const schema = a.schema({
     // Must pass references in the same order as identifiers.
     author: a.belongsTo('Member', 'authorId'),
     items: a.ref('PostItem').required().array().required(),
+    comments: a.ref('Comment').required().array().required(),
     privacySetting: a.enum(['PRIVATE', 'GROUP', 'PUBLIC']),
   })
     //.sortKeys(["createdAt"]),
@@ -105,6 +169,11 @@ const schema = a.schema({
   //    privacySetting: a.enum(['PRIVATE', 'GROUP', 'PUBLIC']),
   //  })
   // .authorization(allow => [allow.ownersDefinedIn('members')]),
+
+  Comment: a.customType({
+    memberId: a.string().required(),
+    text: a.string().required(),
+  }),
 
   SurveyResponse: a.customType({
     choiceId: a.string().required(),
