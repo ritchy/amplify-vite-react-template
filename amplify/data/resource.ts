@@ -19,6 +19,8 @@ const roomType = {
   topic: a.string().required(),
 }
 
+//need to reconcile how relations are handled here vs in the model definition
+// id vs String, belongsTo vs reference field
 const messageType = {
   id: a.id().required(),
   createdDate: a.datetime().required(),
@@ -78,7 +80,7 @@ const schema = a.schema({
 
   Member: a.model({
     id: a.id().required(),
-    memberId: a.id(),
+    userId: a.id(),
     name: a.string().required(),
     handle: a.string().required(),
     profilePhoto: a.ref('Photo'),
