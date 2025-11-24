@@ -70,7 +70,7 @@ const schema = a.schema({
 
   Room: a.model({
     topic: a.string(),
-    members: a.string().array().required(),
+    members: a.string().required().array().required(),
   })
   .authorization((allow) => [allow.authenticated()]),
 
