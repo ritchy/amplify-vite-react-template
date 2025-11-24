@@ -25,7 +25,7 @@ const messageType = {
   lastUpdatedDate: a.datetime().required(),
   content: a.string().required(),
   roomId: a.string().required(),
-  username: a.string().required()
+  memberId: a.id().required()
 }
 
 /*=================================================================
@@ -43,7 +43,7 @@ const schema = a.schema({
 
   subscribeMessage: a.subscription()
     .for(a.ref('publishMessage'))
-    .arguments({ roomId: a.string(), myUsername: a.string() })
+    .arguments({ roomId: a.string(), memberId: a.string() })
     .authorization(allow => [allow.authenticated()])
     .handler(a.handler.custom({
       entry: './handlers/subscribeMessage.js'
@@ -60,7 +60,7 @@ const schema = a.schema({
 
   subscribeRoom: a.subscription()
     .for(a.ref('publishRoom'))
-    //.arguments({ roomId: a.string(), myUsername: a.string() })
+    //.arguments({ roomId: a.string(), memberId: a.string() })
     .authorization(allow => [allow.authenticated()])
     .handler(a.handler.custom({
       entry: './handlers/subscribeRoom.js'
@@ -78,7 +78,7 @@ const schema = a.schema({
 
   Member: a.model({
     id: a.id().required(),
-    userId: a.id(),
+    memberId: a.id(),
     name: a.string().required(),
     handle: a.string().required(),
     profilePhoto: a.ref('Photo'),
@@ -138,7 +138,6 @@ const schema = a.schema({
     // Must pass references in the same order as identifiers.
     author: a.belongsTo('Member', 'authorId'),
     items: a.ref('PostItem').required().array().required(),
-    //comments: a.ref('Comment').required().array(),
     privacySetting: a.enum(['PRIVATE', 'GROUP', 'PUBLIC']),
   })
     //.sortKeys(["createdAt"]),
