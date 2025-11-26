@@ -37,7 +37,7 @@ const schema = a.schema({
 
   publishMessage: a.mutation()
     .arguments(messageType)
-    .returns(a.ref('NewMessage'))
+    .returns(a.ref('Message'))
     .authorization(allow => [allow.authenticated()])
     .handler(a.handler.custom({
       entry: './handlers/publishMessage.js',
@@ -51,7 +51,7 @@ const schema = a.schema({
       entry: './handlers/subscribeMessage.js'
     })),
 
-  NewMessage: a.customType(messageType),
+  Message: a.customType(messageType),
 
   publishRoom: a.mutation()
     .arguments(roomType)
@@ -70,13 +70,15 @@ const schema = a.schema({
 
   Room: a.model({
     topic: a.string(),
-    members: a.string().required().array().required(),
+    members: a.hasMany('RoomMember', 'roomId'),
+    //members: a.string().required().array().required(),
+    photos: a.ref('Photo').required().array().required(),
+    messages: a.ref('Message').required().array().required(),
   })
   .authorization((allow) => [allow.authenticated()]),
 
-  Message: a.model(messageType)
-  .authorization((allow) => [allow.authenticated()]),
-
+  //Message: a.model(messageType)
+  //.authorization((allow) => [allow.authenticated()]),
 
   Member: a.model({
     id: a.id().required(),
@@ -91,6 +93,7 @@ const schema = a.schema({
     // 2. Create a belongsTo relationship with the reference field
     //group: a.belongsTo('Group', 'groupId'),
     groups: a.hasMany('GroupMember', 'memberId'),
+    rooms: a.hasMany('RoomMember', 'memberId'),
     posts: a.hasMany('Post', 'authorId'),
   })
     .authorization((allow) => [allow.owner()]),
@@ -118,6 +121,17 @@ const schema = a.schema({
     group: a.belongsTo('Group', 'groupId'),
   })
     .authorization((allow) => [allow.owner()]),
+
+  RoomMember: a.model({
+    // 1. Create reference fields to both ends of
+    //    the many-to-many relationship
+    memberId: a.id().required(),
+    roomId: a.id().required(),
+
+    member: a.belongsTo('Member', 'memberId'),
+    room: a.belongsTo('Room', 'roomId'),
+  })
+    .authorization((allow) => [allow.authenticated()]),
 
   PostItem: a.customType({
     id: a.id().required(),

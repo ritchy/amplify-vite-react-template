@@ -6,11 +6,16 @@ import { generateClient } from "aws-amplify/data";
 const client = generateClient<Schema>();
 
 export const handler: PostConfirmationTriggerHandler = async (event) => {
+  /***
   const room = await client.models.Room.create({
     topic: "room ${date.now()}",
-    members: []
+    members: [],
+    photos: [],
+    messages: [],
     //  topic: event.request.userAttributes.email
       //profileOwner: `${event.request.userAttributes.sub}::${event.userName}`,
   });
   return room;
+  ***/
+  return event;
 };
