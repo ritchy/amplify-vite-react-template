@@ -69,6 +69,7 @@ const schema = a.schema({
     })),
 
   Room: a.model({
+    id: a.id().required(),
     topic: a.string(),
     members: a.hasMany('RoomMember', 'roomId'),
     //members: a.string().required().array().required(),
