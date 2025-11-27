@@ -71,11 +71,13 @@ const schema = a.schema({
   Room: a.model({
     id: a.id().required(),
     topic: a.string(),
-    members: a.hasMany('RoomMember', 'roomId'),
+    //members: a.hasMany('RoomMember', 'roomId'),
     //members: a.string().required().array().required(),
+    members: a.hasMany('RoomMember', 'roomId'),
     photos: a.ref('Photo').required().array().required(),
     messages: a.ref('Message').required().array().required(),
   })
+  //.authorization((allow) => [allow.owner()]),
   .authorization((allow) => [allow.authenticated()]),
 
   //Message: a.model(messageType)
@@ -97,7 +99,8 @@ const schema = a.schema({
     rooms: a.hasMany('RoomMember', 'memberId'),
     posts: a.hasMany('Post', 'authorId'),
   })
-    .authorization((allow) => [allow.owner()]),
+  // .authorization((allow) => [allow.owner()]),
+  .authorization((allow) => [allow.authenticated()]),
   //.authorization((allow) => [allow.publicApiKey()]),
 
   Group: a.model({
@@ -132,7 +135,8 @@ const schema = a.schema({
     member: a.belongsTo('Member', 'memberId'),
     room: a.belongsTo('Room', 'roomId'),
   })
-    .authorization((allow) => [allow.authenticated()]),
+  //  .authorization((allow) => [allow.owner()]),
+  .authorization((allow) => [allow.authenticated()]),
 
   PostItem: a.customType({
     id: a.id().required(),
