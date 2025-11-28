@@ -113,7 +113,8 @@ const schema = a.schema({
     members: a.hasMany('GroupMember', 'groupId'),
     //posts: a.hasMany('Post', 'id'),
   })
-    .authorization((allow) => [allow.owner()]),
+  .authorization((allow) => [allow.authenticated()]),
+  //.authorization((allow) => [allow.owner()]),
 
   GroupMember: a.model({
     // 1. Create reference fields to both ends of
@@ -124,7 +125,8 @@ const schema = a.schema({
     member: a.belongsTo('Member', 'memberId'),
     group: a.belongsTo('Group', 'groupId'),
   })
-    .authorization((allow) => [allow.owner()]),
+  .authorization((allow) => [allow.authenticated()]),
+  //  .authorization((allow) => [allow.owner()]),
 
   RoomMember: a.model({
     // 1. Create reference fields to both ends of
@@ -162,7 +164,9 @@ const schema = a.schema({
     privacySetting: a.enum(['PRIVATE', 'GROUP', 'PUBLIC']),
   })
     //.sortKeys(["createdAt"]),
-    .authorization((allow) => [allow.owner()]),
+    //.authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.authenticated()]),
+
   // allow anyone who's logged in to perform any operation
   //.authorization((allow) => [allow.authenticated()]),
   // below, any user (using Amazon Cognito identity pool's unauthenticated roles) 
@@ -216,7 +220,8 @@ const schema = a.schema({
       privacySetting: a.enum(['PRIVATE', 'FRIENDS_ONLY', 'PUBLIC']),
     })
     //.authorization((allow) => [allow.publicApiKey()]),
-    .authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.authenticated()]),
+    //.authorization((allow) => [allow.owner()]),
 
   Todo: a
     .model({
