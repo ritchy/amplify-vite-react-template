@@ -131,6 +131,7 @@ const schema = a.schema({
   RoomMember: a.model({
     // 1. Create reference fields to both ends of
     //    the many-to-many relationship
+    topic: a.string().required(),
     memberId: a.id().required(),
     roomId: a.id().required(),
 
