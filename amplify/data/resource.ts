@@ -1,5 +1,5 @@
 import { type ClientSchema, a, defineData, defineFunction } from "@aws-amplify/backend";
-import { Message } from "@aws-amplify/ui-react";
+//import { Message } from "@aws-amplify/ui-react";
 
 /*=================================================================
    Define our custom handlers
@@ -36,6 +36,8 @@ const messageType = {
 ==================================================================*/
 const schema = a.schema({
 
+  Message: a.customType(messageType),
+
   publishMessage: a.mutation()
     .arguments(messageType)
     .returns(a.ref('Message'))
@@ -51,8 +53,6 @@ const schema = a.schema({
     .handler(a.handler.custom({
       entry: './handlers/subscribeMessage.js'
     })),
-
-  Message: a.customType(messageType),
 
   publishRoom: a.mutation()
     .arguments(roomType)
@@ -72,8 +72,6 @@ const schema = a.schema({
   Room: a.model({
     id: a.id().required(),
     topic: a.string(),
-    //members: a.hasMany('RoomMember', 'roomId'),
-    //members: a.string().required().array().required(),
     members: a.hasMany('RoomMember', 'roomId'),
     photos: a.ref('Photo').required().array().required(),
     messages: a.hasMany('RoomMessage', 'roomId'),
