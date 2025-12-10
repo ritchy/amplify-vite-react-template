@@ -8,9 +8,11 @@ npx ampx sandbox
 //generate swift classes
 npx ampx generate graphql-client-code --format modelgen --model-target swift
 
-
 // I believe this runs local web projects (React)
 npm run dev
+
+// to clean sandbox resources and start over
+npx ampx sandbox delete
 
 ## Overview
 

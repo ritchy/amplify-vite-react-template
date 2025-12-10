@@ -1,4 +1,5 @@
 import { type ClientSchema, a, defineData, defineFunction } from "@aws-amplify/backend";
+import { Message } from "@aws-amplify/ui-react";
 
 /*=================================================================
    Define our custom handlers
@@ -26,7 +27,7 @@ const messageType = {
   createdDate: a.datetime().required(),
   lastUpdatedDate: a.datetime().required(),
   content: a.string().required(),
-  roomId: a.string().required(),
+  roomId: a.id().required(),
   memberId: a.id().required()
 }
 
@@ -75,10 +76,11 @@ const schema = a.schema({
     //members: a.string().required().array().required(),
     members: a.hasMany('RoomMember', 'roomId'),
     photos: a.ref('Photo').required().array().required(),
-    messages: a.ref('Message').required().array().required(),
+    messages: a.hasMany('RoomMessage', 'roomId'),
+    //messages: a.ref('Message').required().array().required(),
   })
-  //.authorization((allow) => [allow.owner()]),
-  .authorization((allow) => [allow.authenticated()]),
+    //.authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.authenticated()]),
 
   //Message: a.model(messageType)
   //.authorization((allow) => [allow.authenticated()]),
@@ -99,8 +101,8 @@ const schema = a.schema({
     rooms: a.hasMany('RoomMember', 'memberId'),
     posts: a.hasMany('Post', 'authorId'),
   })
-  // .authorization((allow) => [allow.owner()]),
-  .authorization((allow) => [allow.authenticated()]),
+    // .authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.authenticated()]),
   //.authorization((allow) => [allow.publicApiKey()]),
 
   Group: a.model({
@@ -113,8 +115,8 @@ const schema = a.schema({
     members: a.hasMany('GroupMember', 'groupId'),
     //posts: a.hasMany('Post', 'id'),
   })
-  .authorization((allow) => [allow.authenticated()]),
-  //.authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.authenticated()]),
+  // .authorization(allow => [allow.ownersDefinedIn('members')]),
 
   GroupMember: a.model({
     // 1. Create reference fields to both ends of
@@ -125,7 +127,7 @@ const schema = a.schema({
     member: a.belongsTo('Member', 'memberId'),
     group: a.belongsTo('Group', 'groupId'),
   })
-  .authorization((allow) => [allow.authenticated()]),
+    .authorization((allow) => [allow.authenticated()]),
   //  .authorization((allow) => [allow.owner()]),
 
   RoomMember: a.model({
@@ -138,8 +140,8 @@ const schema = a.schema({
     member: a.belongsTo('Member', 'memberId'),
     room: a.belongsTo('Room', 'roomId'),
   })
-  //  .authorization((allow) => [allow.owner()]),
-  .authorization((allow) => [allow.authenticated()]),
+    //  .authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.authenticated()]),
 
   PostItem: a.customType({
     id: a.id().required(),
@@ -166,6 +168,27 @@ const schema = a.schema({
   })
     //.sortKeys(["createdAt"]),
     //.authorization((allow) => [allow.owner()]),
+    .authorization((allow) => [allow.authenticated()]),
+
+  RoomMessage: a.model({
+    //message: a.ref('Message').required(),
+    id: a.id().required(),
+    createdDate: a.datetime().required(),
+    lastUpdatedDate: a.datetime().required(),
+    content: a.string().required(),
+    roomId: a.id().required(),
+    authorId: a.id().required(),
+    room: a.belongsTo('Room', 'roomId'),
+    //author: a.belongsTo('Member', 'authorId'),
+  }).secondaryIndexes((index) => [
+    index("roomId")
+      .queryField("listByRoomId").sortKeys(["createdDate"]),
+    index("authorId")
+      .queryField("listByMemberId").sortKeys(["createdDate"]),
+    //in client -> RoomMessage.listByRoomId({ roomId: '<room_id>', sort: { direction: 'DESC' } })
+    //To customize the underlying DynamoDB's index name, you can optionally provide the name() modifier
+    //.name("RoomMessageIndexRoomId")
+  ])
     .authorization((allow) => [allow.authenticated()]),
 
   // allow anyone who's logged in to perform any operation
@@ -222,7 +245,7 @@ const schema = a.schema({
     })
     //.authorization((allow) => [allow.publicApiKey()]),
     .authorization((allow) => [allow.authenticated()]),
-    //.authorization((allow) => [allow.owner()]),
+  //.authorization((allow) => [allow.owner()]),
 
   Todo: a
     .model({

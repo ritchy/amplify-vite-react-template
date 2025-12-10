@@ -4,7 +4,7 @@ export const request = () => ({ });
 export const response = (ctx) => {
     const filter = {
          roomId: { eq: ctx.arguments.roomId }
-         //username: { ne: ctx.arguments.myUsername }
+         //memberId: { eq: ctx.arguments.memberId }
     }
     extensions.setSubscriptionFilter(util.transform.toSubscriptionFilter(filter))
     return null;
